@@ -7,7 +7,7 @@ public class PubEyeAd {
             String excelFile = "/media/sf_vms_share/rub/abc.xls";
             IncomeListCreater creater = new IncomeListCreater(pdfFile, excelFile);
 
-            int ret_val = creater.buildArchive("01010002");
+            int ret_val = creater.buildArchive("01010008");
             if(ret_val!=0) {
                 System.out.println(creater.getErrMsg());
             }

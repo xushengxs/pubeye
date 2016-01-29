@@ -37,6 +37,26 @@ public class SmartMsExcelReader {
             }
         }
     }
+    static public String getStringSpecificFormatNumericCellValue(Cell cell, Integer intWidth) {
+        if (cell == null) {
+            return "";
+        }
+        String strCell = "";
+        switch (cell.getCellType()) {
+            case Cell.CELL_TYPE_STRING:
+                strCell = cell.getStringCellValue();
+                break;
+            case Cell.CELL_TYPE_NUMERIC:
+                {
+                    int x = (int) cell.getNumericCellValue();
+                    String formatStr = "%0" + intWidth.toString() + "d";
+                    strCell = String.format(formatStr, x);
+                }
+            default:
+                break;
+        }
+        return strCell;
+    }
 
     static public String getStringCellValue(Cell cell) {
         if (cell == null) {
@@ -50,7 +70,19 @@ public class SmartMsExcelReader {
                 break;
             case Cell.CELL_TYPE_NUMERIC:
             case Cell.CELL_TYPE_FORMULA:
-                strCell = String.valueOf(cell.getNumericCellValue());
+                if (DateUtil.isCellDateFormatted(cell)) {
+                    // 如果是Date类型则，转化为Data格式
+
+                    //方法1：这样子的data格式是带时分秒的：2011-10-12 0:00:00
+                    //cellvalue = cell.getDateCellValue().toLocaleString();
+
+                    //方法2：这样子的data格式是不带带时分秒的：2011-10-12
+                    Date date = cell.getDateCellValue();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    strCell = sdf.format(date);
+
+                } else
+                    strCell = String.valueOf(cell.getNumericCellValue());
                 break;
             case Cell.CELL_TYPE_BOOLEAN:
                 strCell = String.valueOf(cell.getBooleanCellValue());
