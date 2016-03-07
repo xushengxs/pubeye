@@ -1,14 +1,24 @@
 package com.smart.pubeyead.view;
 
+import com.smart.pubeyead.controller.IncomeController;
+import com.smart.pubeyead.model.IncomeModel;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.Properties;
 
 public class IncomeCertificateView {
-    public IncomeCertificateView() {
+    Properties prop = null;
+    IncomeModel model = null;
+    IncomeController controller = null;
 
+    public IncomeCertificateView(Properties prop) {
+        this.prop = prop;
+        model = new IncomeModel();
+        controller = new IncomeController();
     }
 
-    static public JPanel createInstance() {
+    public JPanel build() {
         JPanel panel = new JPanel();
         GridBagLayout layout = new GridBagLayout();
         panel.setLayout(layout);
@@ -45,42 +55,70 @@ public class IncomeCertificateView {
         // 这样做就可以保证组件不会收缩到ipadx,ipady所确定的大小以下，
         // 因此可以用ipadx,ipady的值来指定组件的大小，而不必指定组件的大小否则会有意想不到的效果
 
-        JButton bt1 = new JButton("b1");
-        panel.add(bt1);
-        layout.setConstraints(bt1, new GridBagConstraints(
-                0, 0,   //int gridx,int gridy,
+        buildLineWithLabelAndText(panel, layout, 1, "员工编号", "");
+        buildLineWithLabelAndText(panel, layout, 2, "联系人", "");
+        buildLineWithLabelAndText(panel, layout, 3, "联系电话", "");
+        buildLineWithLabelAndText(panel, layout, 4, "公司地址", "");
+        buildLineWithLabelAndText(panel, layout, 5, "日期", "");
+        buildLineWithLabelAndText(panel, layout, 6, "姓名", "");
+        buildLineWithLabelAndText(panel, layout, 7, "收入", "");
+        buildLineWithLabelAndText(panel, layout, 8, "职务", "");
+        buildLineWithLabelAndText(panel, layout, 9, "入司时间", "");
+        buildLineWithLabelAndText(panel, layout, 10, "对方公司", "");
+
+        String[] listBoxString = {"部门", "职务", "入职时间", "健康状况",  "公司地址",  "年收入"};
+        buildCheckBoxes(panel, 10, listBoxString);
+
+        buildLineWithLabelAndText(panel, layout, 11, "人员库", "");
+        buildLineWithLabelAndText(panel, layout, 12, "照片库", "");
+        buildLineWithLabelAndText(panel, layout, 13, "输出文件", "");
+
+        buildButtonView("查看", 14);
+        buildButtonCertificate("收入证明", 14);
+        buildButtonPhoto("证件提取", 14);
+
+        return panel;
+    }
+
+    private void buildLineWithLabelAndText(JPanel panel, GridBagLayout layout, int line, String labelString, String defaultText) {
+        JLabel label = new JLabel(labelString);
+        panel.add(label);
+        layout.setConstraints(label, new GridBagConstraints(
+                0, line,   //int gridx,int gridy,
                 1, 1,   //int gridwidth,int gridheight,
-                0, 0,   //double weightx,double weighty,
-                GridBagConstraints.NORTHWEST,   //int anchor,
+                10, 0,   //double weightx,double weighty,
+                GridBagConstraints.CENTER,   //int anchor,
                 GridBagConstraints.NONE,     // int fill,
                 new Insets(0,0,0,0),    // Insets insets,
                 0, 0//int ipadx,int ipady
         ));
 
-        JButton bt2 = new JButton("b2");
-        panel.add(bt2);
-        layout.setConstraints(bt2, new GridBagConstraints(
-                2, 2,   //int gridx,int gridy,
-                4, 1,   //int gridwidth,int gridheight,
-                100, 0,   //double weightx,double weighty,
+        JTextField text = new JTextField(defaultText);
+        panel.add(text);
+        layout.setConstraints(text, new GridBagConstraints(
+                1, line,   //int gridx,int gridy,
+                5, 1,   //int gridwidth,int gridheight,
+                50, 0,   //double weightx,double weighty,
                 GridBagConstraints.CENTER,   //int anchor,
                 GridBagConstraints.HORIZONTAL,     // int fill,
                 new Insets(0,0,0,0),    // Insets insets,
                 0, 0//int ipadx,int ipady
         ));
+    }
 
-        JButton bt3 = new JButton("b3");
-        panel.add(bt3);
-        layout.setConstraints(bt3, new GridBagConstraints(
-                6, 2,   //int gridx,int gridy,
-                1, 1,   //int gridwidth,int gridheight,
-                0, 0,   //double weightx,double weighty,
-                GridBagConstraints.CENTER,   //int anchor,
-                GridBagConstraints.NONE,     // int fill,
-                new Insets(0,0,0,0),    // Insets insets,
-                0, 0//int ipadx,int ipady
-        ));
+    private void buildCheckBoxes(JPanel panel, int line, String[] checkBoxNames) {
 
-        return panel;
+    }
+
+    private void buildButtonView(String name, int line) {
+
+    }
+
+    private void buildButtonCertificate(String name, int line) {
+
+    }
+
+    private void buildButtonPhoto(String name, int line) {
+
     }
 }

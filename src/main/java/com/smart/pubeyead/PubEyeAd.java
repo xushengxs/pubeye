@@ -1,5 +1,6 @@
 package com.smart.pubeyead;
 
+import com.smart.pubeyead.controller.IncomeListCreater;
 import com.smart.pubeyead.view.JFontDialog;
 import com.smart.pubeyead.view.MultiTaskView;
 
@@ -7,6 +8,12 @@ import java.awt.*;
 
 public class PubEyeAd {
     static public void main(String[] args) {
+        if(true) {
+            MultiTaskView multiTaskView = new MultiTaskView();
+            multiTaskView.show();
+            return;
+        }
+
         if(true) {
             //MultiTaskView mainWindow = new MultiTaskView();
             //mainWindow.show();
