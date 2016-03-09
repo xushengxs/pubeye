@@ -20,7 +20,7 @@ public class MultiTaskView {
 
         contentPane.add(tabbedPane);
         frame.setVisible(true);
-        frame.setSize(400, 400);
+        frame.setSize(450, 500);
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {

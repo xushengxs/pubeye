@@ -1,0 +1,34 @@
+package com.smart.pubeyead.utils;
+
+public class Constants {
+    //map key IDs
+    static public final String TAG_ID = "id";
+    static public final String TAG_NAME = "name";
+    static public final String TAG_IDCARD = "idcard";
+    static public final String TAG_POSITION = "position";
+    static public final String TAG_ENTRY_DATE = "entryDate";
+    static public final String TAG_HEALTH = "health";
+    static public final String TAG_DEPARTMENT = "department";
+    static public final String TAG_YEAR_INCOME = "yearIncome";
+    static public final String TAG_MONTH_INCOME = "monthIncome";
+
+    static public final String TAG_COMPANY_ADRESS = "companyAddrss";
+    static public final String TAG_CONTACT_TELEPHONE = "contactTelephone";
+    static public final String TAG_CONTACT_PERSON = "contactPerson";
+    static public final String TAG_CERTIFICATE_DATE = "certificateDate";
+    static public final String TAG_TO_COMPANY = "toCompany";
+
+    static public final String TAG_EXCEL_FILE = "excelFile";
+    static public final String TAG_PHOTO_PATH = "photoPath";
+    static public final String TAG_OUTPUT_PATH = "outputPath";
+
+    //properties key
+    static public final String PROPERTY_CERTIFICATE_DATA_PATH = "certificate.excelp_ath";
+    static public final String PROPERTY_CERTIFICATE_PHOTO_PATH = "certificate.photo_path";
+    static public final String PROPERTY_CERTIFICATE_OUTPUT_PATH = "certificate.output_path";
+    static public final String PROPERTY_CERTIFICATE_CONTACT_PERSON = "certificate.contact_person";
+    static public final String PROPERTY_CERTIFICATE_CONTACT_TELEPHONE = "certificate.contact_telephone";
+    static public final String PROPERTY_CERTIFICATE_COMPANY_ADDRESS = "certificate.company_address";
+    static public final String PROPERTY_CERTIFICATE_OPENIMAGE_WIN = "certificate.open_image_win";
+    static public final String PROPERTY_CERTIFICATE_OPENIMAGE_LINUX = "certificate.open_image_linux";
+}

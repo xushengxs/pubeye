@@ -2,24 +2,27 @@ package com.smart.pubeyead.view;
 
 import com.smart.pubeyead.controller.IncomeController;
 import com.smart.pubeyead.model.IncomeModel;
+import com.smart.pubeyead.utils.Constants;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 public class IncomeCertificateView {
     Properties prop = null;
-    IncomeModel model = null;
     IncomeController controller = null;
+    JPanel panel = new JPanel();
 
     public IncomeCertificateView(Properties prop) {
         this.prop = prop;
-        model = new IncomeModel();
-        controller = new IncomeController();
+        controller = new IncomeController(prop);
     }
 
     public JPanel build() {
-        JPanel panel = new JPanel();
         GridBagLayout layout = new GridBagLayout();
         panel.setLayout(layout);
 
@@ -54,33 +57,31 @@ public class IncomeCertificateView {
         //内部填充，是指在组件首选大小的基础上x方向上加上ipadx，y方向上加上ipady,
         // 这样做就可以保证组件不会收缩到ipadx,ipady所确定的大小以下，
         // 因此可以用ipadx,ipady的值来指定组件的大小，而不必指定组件的大小否则会有意想不到的效果
-
-        buildLineWithLabelAndText(panel, layout, 1, "员工编号", "");
-        buildLineWithLabelAndText(panel, layout, 2, "联系人", "");
-        buildLineWithLabelAndText(panel, layout, 3, "联系电话", "");
-        buildLineWithLabelAndText(panel, layout, 4, "公司地址", "");
-        buildLineWithLabelAndText(panel, layout, 5, "日期", "");
-        buildLineWithLabelAndText(panel, layout, 6, "姓名", "");
-        buildLineWithLabelAndText(panel, layout, 7, "收入", "");
-        buildLineWithLabelAndText(panel, layout, 8, "职务", "");
-        buildLineWithLabelAndText(panel, layout, 9, "入司时间", "");
-        buildLineWithLabelAndText(panel, layout, 10, "对方公司", "");
+        int lineNum = 1;
+        buildLineWithLabelAndText(panel, layout, lineNum++, "员工编号", "", Constants.TAG_ID);
+        buildLineWithLabelAndText(panel, layout, lineNum++, "联系人", "", Constants.TAG_CONTACT_PERSON);
+        buildLineWithLabelAndText(panel, layout, lineNum++, "联系电话", "", Constants.TAG_CONTACT_TELEPHONE);
+        buildLineWithLabelAndText(panel, layout, lineNum++, "公司地址", "", Constants.TAG_COMPANY_ADRESS);
+        buildLineWithLabelAndText(panel, layout, lineNum++, "日期", "", Constants.TAG_CERTIFICATE_DATE);
+        buildLineWithLabelAndText(panel, layout, lineNum++, "姓名", "", Constants.TAG_NAME);
+        buildLineWithLabelAndText(panel, layout, lineNum++, "收入", "", Constants.TAG_YEAR_INCOME);
+        buildLineWithLabelAndText(panel, layout, lineNum++, "职务", "", Constants.TAG_POSITION);
+        buildLineWithLabelAndText(panel, layout, lineNum++, "入司时间", "", Constants.TAG_ENTRY_DATE);
+        buildLineWithLabelAndText(panel, layout, lineNum++, "对方公司", "", Constants.TAG_TO_COMPANY);
 
         String[] listBoxString = {"部门", "职务", "入职时间", "健康状况",  "公司地址",  "年收入"};
-        buildCheckBoxes(panel, 10, listBoxString);
+        buildCheckBoxes(panel, layout, lineNum++, listBoxString);
 
-        buildLineWithLabelAndText(panel, layout, 11, "人员库", "");
-        buildLineWithLabelAndText(panel, layout, 12, "照片库", "");
-        buildLineWithLabelAndText(panel, layout, 13, "输出文件", "");
+        buildLineWithLabelAndText(panel, layout, lineNum++, "人员库", "", Constants.TAG_EXCEL_FILE);
+        buildLineWithLabelAndText(panel, layout, lineNum++, "照片库", "", Constants.TAG_PHOTO_PATH);
+        buildLineWithLabelAndText(panel, layout, lineNum++, "输出文件", "", Constants.TAG_OUTPUT_PATH);
 
-        buildButtonView("查看", 14);
-        buildButtonCertificate("收入证明", 14);
-        buildButtonPhoto("证件提取", 14);
+        buildButtons(panel, layout, lineNum++);
 
         return panel;
     }
 
-    private void buildLineWithLabelAndText(JPanel panel, GridBagLayout layout, int line, String labelString, String defaultText) {
+    private void buildLineWithLabelAndText(JPanel panel, GridBagLayout layout, int line, String labelString, String defaultText, String textComponentName) {
         JLabel label = new JLabel(labelString);
         panel.add(label);
         layout.setConstraints(label, new GridBagConstraints(
@@ -94,6 +95,7 @@ public class IncomeCertificateView {
         ));
 
         JTextField text = new JTextField(defaultText);
+        text.setName(textComponentName);
         panel.add(text);
         layout.setConstraints(text, new GridBagConstraints(
                 1, line,   //int gridx,int gridy,
@@ -106,19 +108,128 @@ public class IncomeCertificateView {
         ));
     }
 
-    private void buildCheckBoxes(JPanel panel, int line, String[] checkBoxNames) {
+    private void buildCheckBoxes(JPanel panel, GridBagLayout layout, int line, String[] checkBoxNames) {
+        JPanel checkPanel = new JPanel();
+        GridLayout checkLayout = new GridLayout(2, 3);
+        checkPanel.setLayout(checkLayout);
+        for(int i=0; i<checkBoxNames.length; i++) {
+            JCheckBox checkBox = new JCheckBox(checkBoxNames[i]);
+            checkPanel.add(checkBox);
+        }
 
+        panel.add(checkPanel);
+        layout.setConstraints(checkPanel, new GridBagConstraints(
+                1, line,   //int gridx,int gridy,
+                6, 1,   //int gridwidth,int gridheight,
+                0, 0,   //double weightx,double weighty,
+                GridBagConstraints.CENTER,   //int anchor,
+                GridBagConstraints.HORIZONTAL,     // int fill,
+                new Insets(0,0,0,0),    // Insets insets,
+                0, 0//int ipadx,int ipady
+        ));
     }
 
-    private void buildButtonView(String name, int line) {
+    private void buildButtons(JPanel panel, GridBagLayout layout, int line) {
+        JPanel checkPanel = new JPanel();
+        GridLayout btLayout = new GridLayout(1, 4);
+        checkPanel.setLayout(btLayout);
 
+        JButton buttonView = new JButton("查看");
+        checkPanel.add(buttonView);
+        buttonView.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doView();
+            }
+        });
+
+        JButton buttonCertificate = new JButton("收入证明");
+        checkPanel.add(buttonCertificate);
+        buttonCertificate.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doCertificate();
+            }
+        });
+
+        JButton buttonPhoto = new JButton("证件提取");
+        checkPanel.add(buttonPhoto);
+        buttonPhoto.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doPhoto();
+            }
+        });
+
+        JButton buttonSetting = new JButton("缺省设置");
+        checkPanel.add(buttonSetting);
+        buttonSetting.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doSetting();
+            }
+        });
+
+        panel.add(checkPanel);
+        layout.setConstraints(checkPanel, new GridBagConstraints(
+                1, line,   //int gridx,int gridy,
+                6, 1,   //int gridwidth,int gridheight,
+                0, 0,   //double weightx,double weighty,
+                GridBagConstraints.CENTER,   //int anchor,
+                GridBagConstraints.HORIZONTAL,     // int fill,
+                new Insets(0,0,0,0),    // Insets insets,
+                0, 0//int ipadx,int ipady
+        ));
     }
 
-    private void buildButtonCertificate(String name, int line) {
-
+    private Map<String, String> buildTextMap() {
+        Map<String, String> args = new HashMap<String, String>();
+        for(Component component: panel.getComponents()) {
+            if(component instanceof JTextField) {
+                String cmpName = component.getName();
+                args.put(cmpName, ((JTextField) component).getText());
+            }
+        }
+        return args;
     }
 
-    private void buildButtonPhoto(String name, int line) {
+    private void updateTextFields(Map<String, String> result) {
+        for(Component component: panel.getComponents()) {
+            if(component instanceof JTextField) {
+                String cmpName = component.getName();
+                String val = result.get(cmpName);
+                if(val != null) {
+                    ((JTextField) component).setText(val);
+                }
+            }
+        }
+    }
+
+    private void doView() {
+        Map<String, String> args = buildTextMap();
+
+        Map<String, String> result = controller.getPersonelInfo(args);
+
+        updateTextFields(result);
+    }
+
+    private void doCertificate() {
+        Map<String, String> args = buildTextMap();
+
+        int ret = controller.generateCertificate(args);
+        String msg = "成功输出";
+        if(ret != 0) {
+            msg = controller.getLatestError();
+        }
+        JOptionPane.showMessageDialog(null, msg, "提示",JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void doPhoto() {
+        Map<String, String> args = buildTextMap();
+        int ret = controller.selectPhoto(args);
+        if(ret != 0) {
+            String msg = controller.getLatestError();
+            JOptionPane.showMessageDialog(null, msg, "提示",JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void doSetting() {
 
     }
 }
