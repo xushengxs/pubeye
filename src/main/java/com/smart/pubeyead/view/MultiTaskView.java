@@ -4,10 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Properties;
 
 public class MultiTaskView {
-    public MultiTaskView() {
-
+    Properties prop = null;
+    public MultiTaskView(Properties prop) {
+        this.prop = prop;
     }
 
     public void show() {
@@ -15,7 +17,7 @@ public class MultiTaskView {
         Container contentPane = frame.getContentPane();
 
         JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-        JPanel incomeTaskPanel = (new IncomeCertificateView(null)).build();
+        JPanel incomeTaskPanel = (new IncomeCertificateView(prop)).build();
         tabbedPane.addTab("收入证明", incomeTaskPanel);
 
         contentPane.add(tabbedPane);

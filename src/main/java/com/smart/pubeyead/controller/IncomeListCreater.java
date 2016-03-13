@@ -145,7 +145,7 @@ public class IncomeListCreater {
         int ret_val = 0;
         try {
             Document document = pdfCreater.getDocument();
-            Font curFont = SmartPdfCreater.setChineseFont("STSong-Light");
+            Font curFont = SmartPdfCreater.setChineseFont("STSong-Light", Font.NORMAL, 12);
 
             Paragraph p0 = new Paragraph(titleString, curFont);
             p0.setAlignment(TextElementArray.ALIGN_CENTER);
@@ -212,7 +212,7 @@ public class IncomeListCreater {
         try {
             PdfPTable tbl = new PdfPTable(5);
             tbl.setHorizontalAlignment(Element.ALIGN_CENTER);
-            Font curFont = SmartPdfCreater.setChineseFont("STSong-Light");
+            Font curFont = SmartPdfCreater.setChineseFont("STSong-Light", Font.NORMAL, 12);
             double totalBeforeTax, totalAfterTax, x;
 
             //line 1
@@ -298,7 +298,7 @@ public class IncomeListCreater {
         int ret_val = 0;
         try {
             PdfPTable tbl = new PdfPTable(5);
-            Font curFont = SmartPdfCreater.setChineseFont("STSong-Light");
+            Font curFont = SmartPdfCreater.setChineseFont("STSong-Light", Font.NORMAL, 12);
             PdfPCell cell;
 
             //line 1
@@ -363,7 +363,7 @@ public class IncomeListCreater {
         int ret_val = 0;
         try {
             PdfPTable tbl = new PdfPTable(5);
-            Font curFont = SmartPdfCreater.setChineseFont("STSong-Light");
+            Font curFont = SmartPdfCreater.setChineseFont("STSong-Light", Font.NORMAL, 12);
             PdfPCell cell;
 
             //line 1
@@ -437,13 +437,13 @@ public class IncomeListCreater {
             Document document = pdfCreater.getDocument();
             int itemTotal = footerItem.length;
             for(int itemNum=0; itemNum<itemTotal; itemNum++) {
-                curFont = SmartPdfCreater.setChineseFont("STSong-Light");
+                curFont = SmartPdfCreater.setChineseFont("STSong-Light", Font.NORMAL, 12);
                 Paragraph title = new Paragraph(footerItem[itemNum], curFont);
                 title.setAlignment(TextElementArray.ALIGN_LEFT);
                 document.add(title);
 
                 if(footerItemContents[itemNum]!=null) {
-                    curFont = SmartPdfCreater.setChineseFont("STSong-Light");
+                    curFont = SmartPdfCreater.setChineseFont("STSong-Light", Font.NORMAL, 12);
                     Paragraph content = new Paragraph(footerItemContents[itemNum], curFont);
                     content.setAlignment(TextElementArray.ALIGN_LEFT);
                     document.add(content);

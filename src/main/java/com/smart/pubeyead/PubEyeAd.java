@@ -1,44 +1,48 @@
 package com.smart.pubeyead;
 
 import com.smart.pubeyead.controller.IncomeListCreater;
+import com.smart.pubeyead.utils.PropertyOperator;
 import com.smart.pubeyead.view.JFontDialog;
 import com.smart.pubeyead.view.MultiTaskView;
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.collections.functors.ExceptionPredicate;
 
+import javax.swing.*;
 import java.awt.*;
+import java.util.Properties;
 
 public class PubEyeAd {
     static public void main(String[] args) {
-        if(true) {
-            MultiTaskView multiTaskView = new MultiTaskView();
-            multiTaskView.show();
-            return;
-        }
-
-        if(true) {
-            //MultiTaskView mainWindow = new MultiTaskView();
-            //mainWindow.show();
-
-            JFontDialog fdlg = new JFontDialog();
-            Font x = fdlg.openDialog();
-            System.out.println(x.getName());
-            System.out.println(x.getSize());
-            System.out.println(x.getStyle());
-            return;
-        }
-
         try {
-            String pdfFile = "/home/foobar/temp/rub/1.pdf";
-            String excelFile = "/media/sf_vms_share/rub/abc.xls";
-            IncomeListCreater creater = new IncomeListCreater(pdfFile, excelFile);
+            // Create a Parser
+            CommandLineParser parser = new BasicParser( );
+            Options options = new Options( );
+            options.addOption("h", "help", false, "Print this usage information");
+            options.addOption("c", "file", true, "File to save program output to");
+            // Parse the program arguments
+            CommandLine commandLine = parser.parse( options, args );
 
-            int ret_val = creater.buildArchive("01010008");
-            if(ret_val!=0) {
-                System.out.println(creater.getErrMsg());
+            // Set the appropriate variables based on supplied options
+            if( commandLine.hasOption('h') ) {
+                String msg = "m.jar -c set.propertiese ";
+                JOptionPane.showMessageDialog(null, msg, "提示", JOptionPane.ERROR_MESSAGE);
+                System.exit(0);
+            }
+            Properties prop = null;
+            if( commandLine.hasOption('c') ) {
+                String propFile = commandLine.getOptionValue('c');
+                prop = PropertyOperator.readProperties(propFile);
             }
 
-            creater.close();
+            MultiTaskView mtv = new MultiTaskView(prop);
+            mtv.show();
         } catch(Exception e) {
-            System.out.println(e.getMessage());
+            String msg = e.getMessage();
+            System.out.println(msg);
+            JOptionPane.showMessageDialog(null, msg, "提示",JOptionPane.ERROR_MESSAGE);
         }
 
         return;

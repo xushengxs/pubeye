@@ -3,11 +3,15 @@ package com.smart.pubeyead.view;
 import com.smart.pubeyead.controller.IncomeController;
 import com.smart.pubeyead.model.IncomeModel;
 import com.smart.pubeyead.utils.Constants;
+import com.smart.pubeyead.utils.MiscUtils;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -59,22 +63,40 @@ public class IncomeCertificateView {
         // 因此可以用ipadx,ipady的值来指定组件的大小，而不必指定组件的大小否则会有意想不到的效果
         int lineNum = 1;
         buildLineWithLabelAndText(panel, layout, lineNum++, "员工编号", "", Constants.TAG_ID);
-        buildLineWithLabelAndText(panel, layout, lineNum++, "联系人", "", Constants.TAG_CONTACT_PERSON);
-        buildLineWithLabelAndText(panel, layout, lineNum++, "联系电话", "", Constants.TAG_CONTACT_TELEPHONE);
-        buildLineWithLabelAndText(panel, layout, lineNum++, "公司地址", "", Constants.TAG_COMPANY_ADRESS);
-        buildLineWithLabelAndText(panel, layout, lineNum++, "日期", "", Constants.TAG_CERTIFICATE_DATE);
+        buildLineWithLabelAndText(panel, layout, lineNum++, "联系人",
+                prop.getProperty(Constants.PROPERTY_CERTIFICATE_CONTACT_PERSON), Constants.TAG_CONTACT_PERSON);
+        buildLineWithLabelAndText(panel, layout, lineNum++, "联系电话",
+                prop.getProperty(Constants.PROPERTY_CERTIFICATE_CONTACT_TELEPHONE), Constants.TAG_CONTACT_TELEPHONE);
+        buildLineWithLabelAndText(panel, layout, lineNum++, "公司地址",
+                prop.getProperty(Constants.PROPERTY_CERTIFICATE_COMPANY_ADDRESS), Constants.TAG_COMPANY_ADRESS);
+        {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            String ending = format.format(new Date());
+            buildLineWithLabelAndText(panel, layout, lineNum++, "日期",
+                    ending, Constants.TAG_CERTIFICATE_DATE);
+        }
         buildLineWithLabelAndText(panel, layout, lineNum++, "姓名", "", Constants.TAG_NAME);
         buildLineWithLabelAndText(panel, layout, lineNum++, "收入", "", Constants.TAG_YEAR_INCOME);
         buildLineWithLabelAndText(panel, layout, lineNum++, "职务", "", Constants.TAG_POSITION);
         buildLineWithLabelAndText(panel, layout, lineNum++, "入司时间", "", Constants.TAG_ENTRY_DATE);
         buildLineWithLabelAndText(panel, layout, lineNum++, "对方公司", "", Constants.TAG_TO_COMPANY);
 
-        String[] listBoxString = {"部门", "职务", "入职时间", "健康状况",  "公司地址",  "年收入"};
+        String[] listBoxString = {
+                "部门", Constants.TAG_HAS_DEPARTMENT, Constants.PROPERTY_CERTIFICATE_HAS_DEPARTMENT,
+                "职务", Constants.TAG_HAS_POSITION, Constants.PROPERTY_CERTIFICATE_HAS_POSITION,
+                "入职时间", Constants.TAG_HAS_ENTRY_DATE, Constants.PROPERTY_CERTIFICATE_HAS_ENTRY_DATE,
+                "健康状况", Constants.TAG_HAS_HEALTH, Constants.PROPERTY_CERTIFICATE_HAS_HEALTH,
+                "公司地址", Constants.TAG_USE_ADDRESS, Constants.PROPERTY_CERTIFICATE_USE_ADDRESS,
+                "年收入", Constants.TAG_USE_YEAR_INCOME, Constants.PROPERTY_CERTIFICATE_USE_YEAR_INCOME
+        };
         buildCheckBoxes(panel, layout, lineNum++, listBoxString);
 
-        buildLineWithLabelAndText(panel, layout, lineNum++, "人员库", "", Constants.TAG_EXCEL_FILE);
-        buildLineWithLabelAndText(panel, layout, lineNum++, "照片库", "", Constants.TAG_PHOTO_PATH);
-        buildLineWithLabelAndText(panel, layout, lineNum++, "输出文件", "", Constants.TAG_OUTPUT_PATH);
+        buildLineWithLabelAndText(panel, layout, lineNum++, "人员库",
+                prop.getProperty(Constants.PROPERTY_CERTIFICATE_DATA_PATH), Constants.TAG_EXCEL_FILE);
+        buildLineWithLabelAndText(panel, layout, lineNum++, "照片库",
+                prop.getProperty(Constants.PROPERTY_CERTIFICATE_PHOTO_PATH), Constants.TAG_PHOTO_PATH);
+        buildLineWithLabelAndText(panel, layout, lineNum++, "输出文件",
+                prop.getProperty(Constants.PROPERTY_CERTIFICATE_OUTPUT_PATH), Constants.TAG_OUTPUT_PATH);
 
         buildButtons(panel, layout, lineNum++);
 
@@ -112,8 +134,14 @@ public class IncomeCertificateView {
         JPanel checkPanel = new JPanel();
         GridLayout checkLayout = new GridLayout(2, 3);
         checkPanel.setLayout(checkLayout);
-        for(int i=0; i<checkBoxNames.length; i++) {
+
+        for(int i=0; i<checkBoxNames.length; i=i+3) {
             JCheckBox checkBox = new JCheckBox(checkBoxNames[i]);
+            checkBox.setName(checkBoxNames[i+1]);
+            if(MiscUtils.getPropBoolean(prop, checkBoxNames[i+2]))
+                checkBox.setSelected(true);
+            else
+                checkBox.setSelected(false);
             checkPanel.add(checkBox);
         }
 
@@ -178,12 +206,20 @@ public class IncomeCertificateView {
         ));
     }
 
-    private Map<String, String> buildTextMap() {
+    private Map<String, String> buildAllMap() {
         Map<String, String> args = new HashMap<String, String>();
         for(Component component: panel.getComponents()) {
             if(component instanceof JTextField) {
                 String cmpName = component.getName();
                 args.put(cmpName, ((JTextField) component).getText());
+            }
+            if((component instanceof JPanel)) {
+                for (Component Xcomponent : ((JPanel) component).getComponents()) {
+                    if (Xcomponent instanceof JCheckBox) {
+                        String cmpName = Xcomponent.getName();
+                        args.put(cmpName, Boolean.toString(((JCheckBox) Xcomponent).isSelected()));
+                    }
+                }
             }
         }
         return args;
@@ -191,10 +227,13 @@ public class IncomeCertificateView {
 
     private void updateTextFields(Map<String, String> result) {
         for(Component component: panel.getComponents()) {
-            if(component instanceof JTextField) {
+            if(!(component instanceof JTextField))
+                continue;
+
+            if (component instanceof JTextField) {
                 String cmpName = component.getName();
                 String val = result.get(cmpName);
-                if(val != null) {
+                if (val != null) {
                     ((JTextField) component).setText(val);
                 }
             }
@@ -202,7 +241,7 @@ public class IncomeCertificateView {
     }
 
     private void doView() {
-        Map<String, String> args = buildTextMap();
+        Map<String, String> args = buildAllMap();
 
         Map<String, String> result = controller.getPersonelInfo(args);
 
@@ -210,7 +249,7 @@ public class IncomeCertificateView {
     }
 
     private void doCertificate() {
-        Map<String, String> args = buildTextMap();
+        Map<String, String> args = buildAllMap();
 
         int ret = controller.generateCertificate(args);
         String msg = "成功输出";
@@ -221,7 +260,7 @@ public class IncomeCertificateView {
     }
 
     private void doPhoto() {
-        Map<String, String> args = buildTextMap();
+        Map<String, String> args = buildAllMap();
         int ret = controller.selectPhoto(args);
         if(ret != 0) {
             String msg = controller.getLatestError();

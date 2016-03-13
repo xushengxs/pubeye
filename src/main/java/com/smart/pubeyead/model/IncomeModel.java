@@ -86,8 +86,8 @@ public class IncomeModel {
     private String searchForTag(String fieldName) {
         String result = null;
         for(int i=0; i<mappingCn2Tag.length; i=i+2) {
-            if(mappingCn2Tag[2*i].equals(fieldName)) {
-                result = mappingCn2Tag[2*i+1];
+            if(mappingCn2Tag[i].equals(fieldName)) {
+                result = mappingCn2Tag[i+1];
                 break;
             }
         }
@@ -114,7 +114,7 @@ public class IncomeModel {
         Map<String, Map<String, String>> workingDataStore = new HashMap<String, Map<String, String>>();
 
         int rowNum = sheet.getLastRowNum();
-        for(int row=2; row<rowNum; row++) {
+        for(int row=1; row<=rowNum; row++) {
             Row rowContent = sheet.getRow(row);
             if(rowContent==null)
                 continue;
@@ -147,7 +147,20 @@ public class IncomeModel {
         if(parts.length>1) {
             cur_worksheetName = parts[1];
         }
-        if(!cur_excelPath.equals(excelPath) || !cur_worksheetName.equals(worksheetName)) {
+        boolean rebuildStore = false;
+        if(!cur_excelPath.equals(excelPath))
+            rebuildStore = true;
+        if(!rebuildStore && (cur_worksheetName!=null || worksheetName!=null) ) {
+            if(cur_worksheetName==null && worksheetName!=null)
+                rebuildStore = true;
+            if(cur_worksheetName!=null && worksheetName==null)
+                rebuildStore = true;
+            if(!rebuildStore) {
+                if(!cur_worksheetName.equals(worksheetName))
+                    rebuildStore = true;
+            }
+        }
+        if(rebuildStore){
             excelPath = cur_excelPath;
             worksheetName = cur_worksheetName;
             buildDataStore();

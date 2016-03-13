@@ -81,8 +81,11 @@ public class SmartMsExcelReader {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     strCell = sdf.format(date);
 
-                } else
-                    strCell = String.valueOf(cell.getNumericCellValue());
+                } else {
+                    double x = cell.getNumericCellValue();
+                    //strCell = String.valueOf(x);
+                    strCell = MiscUtils.MakeDoubleSimpleDisplay(x);
+                }
                 break;
             case Cell.CELL_TYPE_BOOLEAN:
                 strCell = String.valueOf(cell.getBooleanCellValue());
@@ -145,7 +148,9 @@ public class SmartMsExcelReader {
                     // 如果是纯数字
                     else {
                         // 取得当前Cell的数值
-                        cellvalue = String.valueOf(cell.getNumericCellValue());
+                        double x = cell.getNumericCellValue();
+                        //cellvalue = String.valueOf(x);
+                        cellvalue = MiscUtils.MakeDoubleSimpleDisplay(x);
                     }
                     break;
                 }

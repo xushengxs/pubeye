@@ -1,10 +1,16 @@
 package com.smart.pubeyead.controller;
 
+import com.itextpdf.text.*;
 import com.smart.pubeyead.model.IncomeModel;
 import com.smart.pubeyead.utils.Constants;
+import com.smart.pubeyead.utils.MiscUtils;
+import com.smart.pubeyead.utils.SmartPdfCreater;
+import com.smart.pubeyead.utils.SystemCmdUtils;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 
 import java.io.File;
-import java.io.FilenameFilter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 
@@ -27,7 +33,139 @@ public class IncomeController {
         return person;
     }
 
+    private void pdfPageSetting(SmartPdfCreater writer) {
+        Document document = writer.getDocument();
+
+        document.setPageSize(PageSize.A4);
+        // unit: pixel
+        //document.setMargins(1.0f, 1.0f, 1.0f, 1.0f);
+        return;
+    }
+
+    private void writePdfHeader(SmartPdfCreater writer, Map<String,String> args, Map<String,String> person) throws Exception {
+        Document document = writer.getDocument();
+        Font curFont = SmartPdfCreater.getFontFollowChinese(prop.getProperty(Constants.PROPERTY_CERTIFICATE_FONT_HEADER));
+
+        String titleString = "个人经济收入证明";
+        Paragraph p0 = new Paragraph(titleString, curFont);
+        p0.setAlignment(TextElementArray.ALIGN_CENTER);
+        document.add(p0);
+
+        return;
+    }
+
+
+    private void writePdfBody(SmartPdfCreater writer, Map<String,String> args, Map<String,String> person) throws Exception  {
+        Document document = writer.getDocument();
+        Font curFont = SmartPdfCreater.getFontFollowChinese(prop.getProperty(Constants.PROPERTY_CERTIFICATE_FONT_BODY));
+
+        Paragraph p0 = new Paragraph(args.get(Constants.TAG_TO_COMPANY)+":", curFont);
+        p0.setAlignment(TextElementArray.ALIGN_LEFT);
+        document.add(p0);
+
+        String body = String.format("兹证明%s（身份证：%s）为本单位正式职工",
+                person.get(Constants.TAG_NAME),
+                person.get(Constants.TAG_IDCARD));
+        if(MiscUtils.getMapBoolean(args, Constants.TAG_HAS_ENTRY_DATE)) {
+            String date_cn = MiscUtils.ConvertDateToCn(person.get(Constants.TAG_ENTRY_DATE));
+            body += String.format("，该同志于%s入司", date_cn);
+        }
+        if(MiscUtils.getMapBoolean(args, Constants.TAG_HAS_DEPARTMENT)) {
+            body += String.format("，所在部门%s", person.get(Constants.TAG_DEPARTMENT));
+        }
+        if(MiscUtils.getMapBoolean(args, Constants.TAG_HAS_POSITION)) {
+            body += String.format("，职务为%s", person.get(Constants.TAG_POSITION));
+        }
+        if(MiscUtils.getMapBoolean(args, Constants.TAG_USE_YEAR_INCOME)) {
+            String x = person.get(Constants.TAG_MONTH_INCOME);
+            body += String.format("，该同志近1年月平均收入为%s元人民币（大写：%s）",
+                    x, MiscUtils.digitUppercase(x));
+        } else {
+            String x = person.get(Constants.TAG_YEAR_INCOME);
+            body += String.format("，该同志近1年收入为%s元人民币（大写：%s）",
+                    x, MiscUtils.digitUppercase(x));
+        }
+        body += "。";
+        if(MiscUtils.getMapBoolean(args, Constants.TAG_HAS_HEALTH)) {
+            body += String.format("目前该职工的身体状况%s。", person.get(Constants.TAG_HEALTH));
+        }
+        Paragraph p1 = new Paragraph(body, curFont);
+        p1.setAlignment(TextElementArray.ALIGN_LEFT);
+        p1.setFirstLineIndent(100f);
+        document.add(p1);
+
+        String body1 = "特此证明。";
+        Paragraph p2 = new Paragraph(body1, curFont);
+        p2.setAlignment(TextElementArray.ALIGN_LEFT);
+        p2.setFirstLineIndent(100f);
+        document.add(p2);
+
+        return;
+    }
+
+    private void writePdfEnd(SmartPdfCreater writer, Map<String,String> args, Map<String,String> person)  throws Exception {
+        Document document = writer.getDocument();
+        Font curFont = SmartPdfCreater.getFontFollowChinese(prop.getProperty(Constants.PROPERTY_CERTIFICATE_FONT_BODY));
+
+        String ending = "\n";
+        ending += String.format("单位名称：%s\n", "中国银联股份有限公司");
+        if(MiscUtils.getMapBoolean(args, Constants.TAG_USE_ADDRESS)) {
+            ending += String.format("地址：%s\n", args.get(Constants.TAG_COMPANY_ADRESS));
+        }
+        ending += String.format("联系人：%s\n", args.get(Constants.TAG_CONTACT_PERSON));
+        ending += String.format("电话：%s\n", args.get(Constants.TAG_CONTACT_TELEPHONE));
+
+        Paragraph p0 = new Paragraph(ending, curFont);
+        p0.setAlignment(TextElementArray.ALIGN_LEFT);
+        document.add(p0);
+
+        String date_cn = "\n\n\n";
+        date_cn += MiscUtils.ConvertDateToCn(args.get(Constants.TAG_CERTIFICATE_DATE));
+        Paragraph p1 = new Paragraph(date_cn, curFont);
+        p1.setAlignment(TextElementArray.ALIGN_RIGHT);
+        document.add(p1);
+    }
+
+    private int buildCertificate(Map<String,String> args, Map<String,String> person, String outputPath) {
+        int ret = 0;
+        SmartPdfCreater writer = null;
+        try {
+            writer = new SmartPdfCreater(outputPath);
+            pdfPageSetting(writer);
+            writePdfHeader(writer, args, person);
+            writePdfBody(writer, args, person);
+            writePdfEnd(writer, args, person);
+            writer.close();
+        } catch (Exception e) {
+            errMsg = e.getMessage();
+            ret = -1;
+        } finally {
+            if(writer!=null) {
+                writer.close();
+            }
+        }
+        return ret;
+    }
+
     public int generateCertificate(Map<String,String> args) {
+        int ret = 0;
+        String outputPath = args.get(Constants.TAG_OUTPUT_PATH);
+
+        Map<String,String> person = getPersonelInfo(args);
+        ret = buildCertificate(args, person, outputPath);
+        if(ret!=0) {
+            return -1;
+        }
+        String os = System.getProperties().getProperty("os.name");
+        String cmd = prop.getProperty(Constants.PROPERTY_CERTIFICATE_OPENPDF_WIN);
+        if(!os.startsWith("win") && !os.startsWith("Win")) {
+            cmd = prop.getProperty(Constants.PROPERTY_CERTIFICATE_OPENPDF_LINUX);
+        }
+        ret = SystemCmdUtils.runCmd(cmd + " " + outputPath);
+        if(ret!=0) {
+            errMsg = SystemCmdUtils.getLatestError();
+        }
+
         return 0;
     }
 
@@ -35,7 +173,7 @@ public class IncomeController {
         String tgt = null;
         File fileTarget = new File(photoPath);
         if(!fileTarget.isDirectory()) {
-            errMsg = "照片设置不是目录";
+            errMsg = "照片设置目录";
             return null;
         }
         File[] fileLogs = fileTarget.listFiles();
@@ -67,22 +205,11 @@ public class IncomeController {
             cmd = prop.getProperty(Constants.PROPERTY_CERTIFICATE_OPENIMAGE_LINUX);
         }
         String fullPath = photoPath + System.getProperties().getProperty("file.separator") + photoFile;
-
-        Runtime run = Runtime.getRuntime();
-        try {
-            Process p = run.exec(cmd + " " + fullPath);
-            if (p.waitFor() != 0) {
-                if (p.exitValue() == 1)//p.exitValue()==0表示正常结束，1：非正常结束
-                    ret = -1;
-            }
-        } catch(Exception e) {
-            ret = -1;
-            errMsg = e.getMessage();
+        ret = SystemCmdUtils.runCmd(cmd + " " + fullPath);
+        if(ret!=0) {
+            errMsg = SystemCmdUtils.getLatestError();
         }
-        //"rundll32.exe" C:\WINDOWS\system32\shimgvw.dll,ImageView_Fullscreen C:\test.gif
-        //rundll32.exe %Systemroot%System32\shimgvw.dll,ImageView_Fullscreen
-        //@"C:\WINDOWS\system32\mspaint.exe",@"D:\\搜索sample.jpg");
-        //eog 1.jpg
+
         return ret;
     }
 

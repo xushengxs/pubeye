@@ -7,10 +7,14 @@ public class PropertyOperator {
     static private String lastErrMsg = "";
     static public Properties readProperties(String filePath) {
         try {
-            InputStream ins = new BufferedInputStream(new FileInputStream(filePath));
             Properties props = new Properties();
-            props.load(ins);
-            ins.close();
+            //InputStream ins = new BufferedInputStream(new FileInputStream(filePath));
+            //props.load(ins);
+            //ins.close();
+            BufferedReader br=new BufferedReader(new InputStreamReader(new FileInputStream(filePath),"UTF-8"));
+            props.load(br);
+            br.close();
+            return props;
         } catch (Exception e) {
             lastErrMsg = e.getMessage();
         }
