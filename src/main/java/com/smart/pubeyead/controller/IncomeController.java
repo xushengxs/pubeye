@@ -6,7 +6,6 @@ import com.smart.pubeyead.utils.Constants;
 import com.smart.pubeyead.utils.MiscUtils;
 import com.smart.pubeyead.utils.SmartPdfCreater;
 import com.smart.pubeyead.utils.SystemCmdUtils;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -58,6 +57,8 @@ public class IncomeController {
     private void writePdfBody(SmartPdfCreater writer, Map<String,String> args, Map<String,String> person) throws Exception  {
         Document document = writer.getDocument();
         Font curFont = SmartPdfCreater.getFontFollowChinese(prop.getProperty(Constants.PROPERTY_CERTIFICATE_FONT_BODY));
+        String indentStr = prop.getProperty(Constants.PROPERTY_CERTIFICATE_BODY_FIRST_LINE_INDENT, "20");
+        float firstLineIndent = Float.parseFloat(indentStr);
 
         Paragraph p0 = new Paragraph(args.get(Constants.TAG_TO_COMPANY)+":", curFont);
         p0.setAlignment(TextElementArray.ALIGN_LEFT);
@@ -76,14 +77,27 @@ public class IncomeController {
         if(MiscUtils.getMapBoolean(args, Constants.TAG_HAS_POSITION)) {
             body += String.format("，职务为%s", person.get(Constants.TAG_POSITION));
         }
+        boolean useAfterTax = Boolean.parseBoolean(prop.getProperty(Constants.PROPERTY_CERTIFICATE_USE_AFTER_TAX, "false"));
+        String taxAdd = "税后";
+        String y = null;
         if(MiscUtils.getMapBoolean(args, Constants.TAG_USE_YEAR_INCOME)) {
-            String x = person.get(Constants.TAG_MONTH_INCOME);
-            body += String.format("，该同志近1年月平均收入为%s元人民币（大写：%s）",
-                    x, MiscUtils.digitUppercase(x));
+            if(useAfterTax) {
+                y =  person.get(Constants.TAG_YEAR_INCOME_AFTER_TAX);
+            } else {
+                y =  person.get(Constants.TAG_YEAR_INCOME);
+            }
+            String x = MiscUtils.ConvertInteger(y);
+            body += String.format("，该同志近1年%s收入为%s元人民币（大写：%s）",
+                    taxAdd, x, MiscUtils.digitUppercase(x));
         } else {
-            String x = person.get(Constants.TAG_YEAR_INCOME);
-            body += String.format("，该同志近1年收入为%s元人民币（大写：%s）",
-                    x, MiscUtils.digitUppercase(x));
+            if(useAfterTax) {
+                y = person.get(Constants.TAG_MONTH_INCOME_AFTER_TAX);
+            } else {
+                y = person.get(Constants.TAG_MONTH_INCOME);
+            }
+            String x = MiscUtils.ConvertInteger(y);
+            body += String.format("，该同志%s月平均收入为%s元人民币（大写：%s）",
+                    taxAdd, x, MiscUtils.digitUppercase(x));
         }
         body += "。";
         if(MiscUtils.getMapBoolean(args, Constants.TAG_HAS_HEALTH)) {
@@ -91,13 +105,13 @@ public class IncomeController {
         }
         Paragraph p1 = new Paragraph(body, curFont);
         p1.setAlignment(TextElementArray.ALIGN_LEFT);
-        p1.setFirstLineIndent(100f);
+        p1.setFirstLineIndent(firstLineIndent);
         document.add(p1);
 
         String body1 = "特此证明。";
         Paragraph p2 = new Paragraph(body1, curFont);
         p2.setAlignment(TextElementArray.ALIGN_LEFT);
-        p2.setFirstLineIndent(100f);
+        p2.setFirstLineIndent(firstLineIndent);
         document.add(p2);
 
         return;
@@ -109,9 +123,7 @@ public class IncomeController {
 
         String ending = "\n";
         ending += String.format("单位名称：%s\n", "中国银联股份有限公司");
-        if(MiscUtils.getMapBoolean(args, Constants.TAG_USE_ADDRESS)) {
-            ending += String.format("地址：%s\n", args.get(Constants.TAG_COMPANY_ADRESS));
-        }
+        ending += String.format("地址：%s\n", args.get(Constants.TAG_COMPANY_ADRESS));
         ending += String.format("联系人：%s\n", args.get(Constants.TAG_CONTACT_PERSON));
         ending += String.format("电话：%s\n", args.get(Constants.TAG_CONTACT_TELEPHONE));
 
@@ -156,12 +168,13 @@ public class IncomeController {
         if(ret!=0) {
             return -1;
         }
+
         String os = System.getProperties().getProperty("os.name");
         String cmd = prop.getProperty(Constants.PROPERTY_CERTIFICATE_OPENPDF_WIN);
         if(!os.startsWith("win") && !os.startsWith("Win")) {
             cmd = prop.getProperty(Constants.PROPERTY_CERTIFICATE_OPENPDF_LINUX);
         }
-        ret = SystemCmdUtils.runCmd(cmd + " " + outputPath);
+        ret = SystemCmdUtils.runCmd(cmd + " " + outputPath, true);
         if(ret!=0) {
             errMsg = SystemCmdUtils.getLatestError();
         }
@@ -205,7 +218,7 @@ public class IncomeController {
             cmd = prop.getProperty(Constants.PROPERTY_CERTIFICATE_OPENIMAGE_LINUX);
         }
         String fullPath = photoPath + System.getProperties().getProperty("file.separator") + photoFile;
-        ret = SystemCmdUtils.runCmd(cmd + " " + fullPath);
+        ret = SystemCmdUtils.runCmd(cmd + " " + fullPath, true);
         if(ret!=0) {
             errMsg = SystemCmdUtils.getLatestError();
         }

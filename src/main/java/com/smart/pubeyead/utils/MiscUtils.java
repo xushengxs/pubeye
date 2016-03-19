@@ -110,4 +110,12 @@ public class MiscUtils {
         }
         return result;
     }
+
+    public static String ConvertInteger(String x) {
+        double y = Double.parseDouble(x);
+        long z = (long) y;
+        String result = Long.toString(z);
+        return result;
+    }
+
 }

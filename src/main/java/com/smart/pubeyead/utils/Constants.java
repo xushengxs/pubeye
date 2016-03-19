@@ -11,6 +11,8 @@ public class Constants {
     static public final String TAG_DEPARTMENT = "department";
     static public final String TAG_YEAR_INCOME = "yearIncome";
     static public final String TAG_MONTH_INCOME = "monthIncome";
+    static public final String TAG_YEAR_INCOME_AFTER_TAX = "yearIncomeAfterTax";
+    static public final String TAG_MONTH_INCOME_AFTER_TAX = "monthIncomeAfterTax";
 
     static public final String TAG_COMPANY_ADRESS = "companyAddrss";
     static public final String TAG_CONTACT_TELEPHONE = "contactTelephone";
@@ -27,7 +29,7 @@ public class Constants {
     static public final String TAG_HAS_POSITION = "hasPosition";
     static public final String TAG_HAS_HEALTH = "hasHealth";
     static public final String TAG_USE_YEAR_INCOME = "useYearIncome";
-    static public final String TAG_USE_ADDRESS = "useAddress";
+    static public final String TAG_USE_AFTER_TAX = "useAfterTax";
 
     //properties key
     static public final String PROPERTY_CERTIFICATE_DATA_PATH = "certificate.excel_path";
@@ -48,9 +50,10 @@ public class Constants {
     static public final String PROPERTY_CERTIFICATE_HAS_POSITION = "certificate.hasPosition";
     static public final String PROPERTY_CERTIFICATE_HAS_HEALTH = "certificate.hasHealth";
     static public final String PROPERTY_CERTIFICATE_USE_YEAR_INCOME = "certificate.useYearIncome";
-    static public final String PROPERTY_CERTIFICATE_USE_ADDRESS = "certificate.useAddress";
+    static public final String PROPERTY_CERTIFICATE_USE_AFTER_TAX = "certificate.useAfterTax";
 
     static public final String PROPERTY_CERTIFICATE_FONT_HEADER = "certificate.fontHeader";
     static public final String PROPERTY_CERTIFICATE_FONT_BODY = "certificate.fontBody";
+    static public final String PROPERTY_CERTIFICATE_BODY_FIRST_LINE_INDENT = "certificate.body.firstLineIndent";
 
 }

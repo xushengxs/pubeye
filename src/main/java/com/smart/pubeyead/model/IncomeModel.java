@@ -81,7 +81,9 @@ public class IncomeModel {
             "入司时间", Constants.TAG_ENTRY_DATE,
             "月平均", Constants.TAG_MONTH_INCOME,
             "身体状况", Constants.TAG_HEALTH,
-            "部门", Constants.TAG_DEPARTMENT
+            "部门", Constants.TAG_DEPARTMENT,
+            "税后年收入", Constants.TAG_YEAR_INCOME_AFTER_TAX,
+            "税后月平均", Constants.TAG_MONTH_INCOME_AFTER_TAX,
     };
     private String searchForTag(String fieldName) {
         String result = null;

@@ -1,10 +1,8 @@
 package com.smart.pubeyead.view;
 
 import com.smart.pubeyead.controller.IncomeController;
-import com.smart.pubeyead.model.IncomeModel;
 import com.smart.pubeyead.utils.Constants;
 import com.smart.pubeyead.utils.MiscUtils;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,7 +27,7 @@ public class IncomeCertificateView {
     public JPanel build() {
         GridBagLayout layout = new GridBagLayout();
         panel.setLayout(layout);
-
+        
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.BOTH;
 
@@ -86,7 +84,7 @@ public class IncomeCertificateView {
                 "职务", Constants.TAG_HAS_POSITION, Constants.PROPERTY_CERTIFICATE_HAS_POSITION,
                 "入职时间", Constants.TAG_HAS_ENTRY_DATE, Constants.PROPERTY_CERTIFICATE_HAS_ENTRY_DATE,
                 "健康状况", Constants.TAG_HAS_HEALTH, Constants.PROPERTY_CERTIFICATE_HAS_HEALTH,
-                "公司地址", Constants.TAG_USE_ADDRESS, Constants.PROPERTY_CERTIFICATE_USE_ADDRESS,
+                "税后", Constants.TAG_USE_AFTER_TAX, Constants.PROPERTY_CERTIFICATE_USE_AFTER_TAX,
                 "年收入", Constants.TAG_USE_YEAR_INCOME, Constants.PROPERTY_CERTIFICATE_USE_YEAR_INCOME
         };
         buildCheckBoxes(panel, layout, lineNum++, listBoxString);
@@ -244,6 +242,10 @@ public class IncomeCertificateView {
         Map<String, String> args = buildAllMap();
 
         Map<String, String> result = controller.getPersonelInfo(args);
+        if(result == null) {
+            JOptionPane.showMessageDialog(null, "找不到人", "错误",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         updateTextFields(result);
     }
