@@ -118,4 +118,20 @@ public class MiscUtils {
         return result;
     }
 
+    public static String buildFontStyleDescription(int styleInt) {
+        String[] types = {"普通","粗体", "斜体", "下划线","删除线"};
+        if(styleInt == 0) {
+             return "," + types[0];
+        }
+
+        String style = "";
+        int mask = 0x1;
+        for(int i=1; i<types.length; i++) {
+            if((styleInt & mask) != 0) {
+                style += "," + types[i];
+            }
+            mask = mask <<1;
+        }
+        return style;
+    }
 }

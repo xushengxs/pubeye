@@ -23,9 +23,14 @@ public class PropertyOperator {
 
     static public boolean writeProperties(Properties prop, String filePath) {
         try {
-            OutputStream fos = new FileOutputStream(filePath);
-            prop.store(fos, "update @ ");
-            fos.close();
+//            OutputStream fos = new FileOutputStream(filePath);
+//            prop.store(fos, "update @ ");
+//            fos.close();
+
+            OutputStream outputStream = new FileOutputStream(filePath);
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(outputStream, "utf-8"));
+            prop.store(bw, "update @ ");
+            outputStream.close();
         } catch(Exception e ) {
             lastErrMsg = e.getMessage();
         }

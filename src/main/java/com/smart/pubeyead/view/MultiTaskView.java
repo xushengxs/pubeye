@@ -17,7 +17,7 @@ public class MultiTaskView {
         Container contentPane = frame.getContentPane();
 
         JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-        JPanel incomeTaskPanel = (new IncomeCertificateView(prop)).build();
+        JPanel incomeTaskPanel = (new IncomeCertificateView(frame, prop)).build();
         tabbedPane.addTab("收入证明", incomeTaskPanel);
 
         contentPane.add(tabbedPane);

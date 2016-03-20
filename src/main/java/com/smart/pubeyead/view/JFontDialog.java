@@ -20,12 +20,9 @@ public class JFontDialog extends JDialog {
     private JDialog frame;
     Font resultFont;
 
-//    public JFontDialog(JDialog owner, String title, boolean modal) {
-      public JFontDialog() {
-        //super(owner, title, modal);
-        super();
-        setTitle("Font Dialog");
-        setModal(true);
+    public JFontDialog(JDialog owner) {
+//      public JFontDialog() {
+        super(owner, "Font Dialog", true);
         Container container = getContentPane();
         container.setLayout(new BorderLayout());
         //this.frame = owner;
@@ -35,7 +32,7 @@ public class JFontDialog extends JDialog {
         JPanel FontSet, FontView;
         FontSet = new JPanel(new GridLayout(1, 4));
         FontView = new JPanel(new GridLayout(1, 2));
-        example = "AaBbCcDdEe";
+        example = "AaBbCcDdEe  扎西德勒";
         FontResolvent = new JLabel(example, JLabel.CENTER);
         FontResolvent.setBackground(Color.WHITE);
 
@@ -81,14 +78,14 @@ public class JFontDialog extends JDialog {
         container.add(panelnorth, BorderLayout.SOUTH);
         setSize(400, 300);
 
-        this.addWindowListener(new WindowAdapter() {
-            public void windowClosed(WindowEvent e) {
-                synchronized (JFontDialog.this) {
-                    JFontDialog.this.notify();
-                }
-            }
-        });
-
+//        this.addWindowListener(new WindowAdapter() {
+//            public void windowClosed(WindowEvent e) {
+//                synchronized (JFontDialog.this) {
+//                    JFontDialog.this.notify();
+//                }
+//            }
+//        });
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         //this.setVisible(true);
     }
 
@@ -285,13 +282,13 @@ public class JFontDialog extends JDialog {
 
     public Font openDialog() {
         this.setVisible(true);
-        synchronized (this) {
-            try {
-                this.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+//        synchronized (this) {
+//            try {
+//                this.wait();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
         return resultFont;
     }
 }

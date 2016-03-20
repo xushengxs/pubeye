@@ -56,4 +56,5 @@ public class Constants {
     static public final String PROPERTY_CERTIFICATE_FONT_BODY = "certificate.fontBody";
     static public final String PROPERTY_CERTIFICATE_BODY_FIRST_LINE_INDENT = "certificate.body.firstLineIndent";
 
+    static public final String PROPERTY_FILE = "properties.file";
 }

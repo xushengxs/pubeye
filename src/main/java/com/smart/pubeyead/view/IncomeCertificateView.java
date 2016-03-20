@@ -3,6 +3,7 @@ package com.smart.pubeyead.view;
 import com.smart.pubeyead.controller.IncomeController;
 import com.smart.pubeyead.utils.Constants;
 import com.smart.pubeyead.utils.MiscUtils;
+import com.smart.pubeyead.utils.PropertyOperator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,8 +19,10 @@ public class IncomeCertificateView {
     Properties prop = null;
     IncomeController controller = null;
     JPanel panel = new JPanel();
+    JFrame parent = null;
 
-    public IncomeCertificateView(Properties prop) {
+    public IncomeCertificateView(JFrame parent, Properties prop) {
+        this.parent = parent;
         this.prop = prop;
         controller = new IncomeController(prop);
     }
@@ -27,7 +30,7 @@ public class IncomeCertificateView {
     public JPanel build() {
         GridBagLayout layout = new GridBagLayout();
         panel.setLayout(layout);
-        
+
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.BOTH;
 
@@ -271,6 +274,17 @@ public class IncomeCertificateView {
     }
 
     private void doSetting() {
+        CertificateSettingDialog dlg = new CertificateSettingDialog(parent, prop);
+//        boolean update = dlg.openDialog();
 
+        Properties propMod = dlg.openDialog();
+        boolean update = propMod.equals(prop);
+        if(update) {
+            String propFile = prop.getProperty(Constants.PROPERTY_FILE);
+            PropertyOperator.writeProperties(propMod, propFile);
+            prop = (Properties) propMod.clone();
+        }
+
+        return;
     }
 }

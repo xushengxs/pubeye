@@ -1,6 +1,7 @@
 package com.smart.pubeyead;
 
 import com.smart.pubeyead.controller.IncomeListCreater;
+import com.smart.pubeyead.utils.Constants;
 import com.smart.pubeyead.utils.PropertyOperator;
 import com.smart.pubeyead.view.JFontDialog;
 import com.smart.pubeyead.view.MultiTaskView;
@@ -35,6 +36,7 @@ public class PubEyeAd {
             if( commandLine.hasOption('c') ) {
                 String propFile = commandLine.getOptionValue('c');
                 prop = PropertyOperator.readProperties(propFile);
+                prop.setProperty(Constants.PROPERTY_FILE, propFile);
             }
 
             MultiTaskView mtv = new MultiTaskView(prop);
