@@ -257,11 +257,11 @@ public class IncomeCertificateView {
         Map<String, String> args = buildAllMap();
 
         int ret = controller.generateCertificate(args);
-        String msg = "成功输出";
+//        String msg = "成功输出";
         if(ret != 0) {
-            msg = controller.getLatestError();
+            String msg = controller.getLatestError();
+            JOptionPane.showMessageDialog(null, msg, "提示",JOptionPane.ERROR_MESSAGE);
         }
-        JOptionPane.showMessageDialog(null, msg, "提示",JOptionPane.ERROR_MESSAGE);
     }
 
     private void doPhoto() {

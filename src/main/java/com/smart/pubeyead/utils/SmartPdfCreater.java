@@ -1,6 +1,7 @@
 package com.smart.pubeyead.utils;
 
 import com.itextpdf.awt.AsianFontMapper;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.pdf.BaseFont;
@@ -11,11 +12,13 @@ import java.io.FileOutputStream;
 
 public class SmartPdfCreater {
     private Document document = null;
+    PdfWriter writer = null;
 
     public SmartPdfCreater(String fileName) throws Exception {
         document = new Document();
-        PdfWriter.getInstance(document, new FileOutputStream(fileName));
+        writer = PdfWriter.getInstance(document, new FileOutputStream(fileName));
         document.open();
+        document.add(new Chunk(""));
     }
 
     public Document getDocument() {
@@ -23,8 +26,14 @@ public class SmartPdfCreater {
     }
 
     public void close() {
-        if(document!=null)
+//        if(writer!=null) {
+//            writer.flush();
+//            writer.close();
+//        }
+        if(document!=null) {
+            System.out.println("pages=" + document.getPageNumber());
             document.close();
+        }
     }
 
     static public Font setChineseFont(String fontDesc, int style, int size) throws Exception {
@@ -83,12 +92,13 @@ public class SmartPdfCreater {
         Font font = null;
 
         String os = System.getProperties().getProperty("os.name");
-        if(os.startsWith("win") || os.startsWith("Win")) {
-            String winSysRoot = System.getenv("SystemRoot");
-            String fontPath = winSysRoot + "\\Fonts\\" + fontDesc + ".ttf";
-            BaseFont basefont = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-            font = new Font(basefont, size, style);
-        } else {
+//        if(os.startsWith("win") || os.startsWith("Win")) {
+//            String winSysRoot = System.getenv("SystemRoot");
+//            String fontPath = winSysRoot + "\\Fonts\\" + fontDesc + ".ttf";
+//            BaseFont basefont = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+//            font = new Font(basefont, size, style);
+//        } else
+        {
             java.awt.Font orgFont = new java.awt.Font(fontDesc, style, size);
             AsianFontMapper mapper = new AsianFontMapper(embedFontDesc, "UniGB-UCS2-H");
             BaseFont basefont =  mapper.awtToPdf(orgFont);
