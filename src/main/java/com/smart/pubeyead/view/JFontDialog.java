@@ -29,6 +29,7 @@ public class JFontDialog extends JDialog {
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(2, 1));
+
         JPanel FontSet, FontView;
         FontSet = new JPanel(new GridLayout(1, 4));
         FontView = new JPanel(new GridLayout(1, 2));
@@ -45,9 +46,9 @@ public class JFontDialog extends JDialog {
         FontSet.add(Fontstyle);
         FontSet.add(Fontsize);
         FontSet.add(Fontcolor);
+        panel.add(FontSet);
 
         FontView.add(FontResolvent);
-        panel.add(FontSet);
         panel.add(FontView);
 
         buttonok = new JButton("确定");
@@ -76,7 +77,7 @@ public class JFontDialog extends JDialog {
 
         container.add(panel, BorderLayout.CENTER);
         container.add(panelnorth, BorderLayout.SOUTH);
-        setSize(400, 300);
+        setSize(500, 500);
 
 //        this.addWindowListener(new WindowAdapter() {
 //            public void windowClosed(WindowEvent e) {
@@ -125,7 +126,7 @@ public class JFontDialog extends JDialog {
         fontpolics = new JList(policnames);
         fontpolics.setName("polic");
         fontpolics.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        fontpolics.setVisibleRowCount(6);
+        fontpolics.setVisibleRowCount(10);
         fontpolics.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                     fontpolict.setText((String) fontpolics.getSelectedValue());
@@ -173,7 +174,7 @@ public class JFontDialog extends JDialog {
         fontstyle = new JList(styles);
         fontstyle.setName("style");
         fontstyle.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        fontstyle.setVisibleRowCount(6);
+        fontstyle.setVisibleRowCount(10);
         fontstyle.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                 fontstylet.setText((String) fontstyle.getSelectedValue());
@@ -223,7 +224,7 @@ public class JFontDialog extends JDialog {
         fontsize = new JList(sizes);
         fontsize.setName("size");
         fontsize.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        fontsize.setVisibleRowCount(6);
+        fontsize.setVisibleRowCount(10);
         fontsize.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                     fontsizet.setText((String) fontsize.getSelectedValue());
@@ -264,7 +265,7 @@ public class JFontDialog extends JDialog {
         fontcolor = new JList(colornames);
         fontcolor.setName("color");
         fontcolor.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        fontcolor.setVisibleRowCount(6);
+        fontcolor.setVisibleRowCount(10);
         fontcolor.addListSelectionListener( new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                     fontcolort.setText(colornames[fontcolor.getSelectedIndex()]);

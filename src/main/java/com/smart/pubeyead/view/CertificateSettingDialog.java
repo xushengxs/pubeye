@@ -238,6 +238,9 @@ public class CertificateSettingDialog extends JDialog implements ActionListener 
         if(actionCmd.equals("标题字体") || actionCmd.equals("内容字体")) {
             JFontDialog dlg = new JFontDialog(this);
             Font x = dlg.openDialog();
+            if(x==null)
+                return;
+
             String y = x.getFontName() + MiscUtils.buildFontStyleDescription(x.getStyle()) + "," + x.getSize();
             if(actionCmd.equals("标题字体")) {
                 tfFontHeader.setText(y);

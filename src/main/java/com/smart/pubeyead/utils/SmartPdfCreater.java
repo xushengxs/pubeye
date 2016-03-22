@@ -91,7 +91,7 @@ public class SmartPdfCreater {
     static public Font getFontFromEnv(String fontDesc, int style, int size, String embedFontDesc) throws Exception  {
         Font font = null;
 
-        String os = System.getProperties().getProperty("os.name");
+//        String os = System.getProperties().getProperty("os.name");
 //        if(os.startsWith("win") || os.startsWith("Win")) {
 //            String winSysRoot = System.getenv("SystemRoot");
 //            String fontPath = winSysRoot + "\\Fonts\\" + fontDesc + ".ttf";

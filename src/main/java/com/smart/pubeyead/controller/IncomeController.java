@@ -44,7 +44,9 @@ public class IncomeController {
     private void writePdfHeader(SmartPdfCreater writer, Map<String,String> args, Map<String,String> person) throws Exception {
         Document document = writer.getDocument();
         Font curFont = SmartPdfCreater.getFontFollowChinese(prop.getProperty(Constants.PROPERTY_CERTIFICATE_FONT_HEADER));
-
+        if(curFont==null) {
+            throw new RuntimeException("font not found");
+        }
         String titleString = "个人经济收入证明";
         Paragraph p0 = new Paragraph(titleString, curFont);
         p0.setAlignment(TextElementArray.ALIGN_CENTER);
@@ -57,6 +59,10 @@ public class IncomeController {
     private void writePdfBody(SmartPdfCreater writer, Map<String,String> args, Map<String,String> person) throws Exception  {
         Document document = writer.getDocument();
         Font curFont = SmartPdfCreater.getFontFollowChinese(prop.getProperty(Constants.PROPERTY_CERTIFICATE_FONT_BODY));
+        if(curFont==null) {
+            throw new RuntimeException("font not found");
+        }
+
         String indentStr = prop.getProperty(Constants.PROPERTY_CERTIFICATE_BODY_FIRST_LINE_INDENT, "20");
         float firstLineIndent = Float.parseFloat(indentStr);
 
@@ -120,6 +126,9 @@ public class IncomeController {
     private void writePdfEnd(SmartPdfCreater writer, Map<String,String> args, Map<String,String> person)  throws Exception {
         Document document = writer.getDocument();
         Font curFont = SmartPdfCreater.getFontFollowChinese(prop.getProperty(Constants.PROPERTY_CERTIFICATE_FONT_BODY));
+        if(curFont==null) {
+            throw new RuntimeException("font not found");
+        }
 
         String ending = "\n";
         ending += String.format("单位名称：%s\n", "中国银联股份有限公司");
